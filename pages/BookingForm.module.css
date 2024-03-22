@@ -1,0 +1,21 @@
+.calendarContainer {
+  width: 30%; /* Example to reduce size, adjust based on your needs */
+  max-width: 600px; /* Max width to control sizing on larger screens */
+  margin: auto; /* Center the calendar in the page */
+  /* Add a height if necessary, but usually, width will control the overall size */
+}
+.background-container {
+  border: 1px solid white;
+  background-image: url('https://iowivkgrejrwddohzemm.supabase.co/storage/v1/object/public/photos/surfREAL.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 550px; /* Adjust as necessary */
+}
+.private  h1 {
+  text-decoration: underline;
+}
