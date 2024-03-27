@@ -15,6 +15,10 @@ const Database = () => {
 
   const router = useRouter();
 
+
+// Now you can use these variables (name, date, and time) in your component
+
+
   useEffect(() => {
     // Extracting query parameters and setting form data accordingly
     const query = router.query;
@@ -46,39 +50,32 @@ const Database = () => {
     }
   
     try {
-      await supabase.from('bookings').insert([{ ...formData, age }]);
+      const { error } = await supabase.from('bookings').insert([{ ...formData, age }]);
+      if (error) throw error;
   
-      // Navigate to the appropriate waiver page based on age and pass the email
+      // Determine the next page based on age
       const pathname = age >= 18 ? '/waiver' : '/waiverminor';
+  
+      // Pass email, name, date, and time as query parameters
       router.push({
         pathname: pathname,
-        query: { email: formData.email }, // Passing email as a query parameter
+        query: {
+          email: formData.email,
+          name: formData.name,
+          date: formData.date,
+          time: formData.time,
+        },
       });
     } catch (error) {
       console.error('An unexpected error occurred:', error);
       alert('An unexpected error occurred. Please try again.');
     }
   };
+  
 
   return (
     <div>
-      {/* Header with Navigation */}
-      <header className="bg-gray-800 text-white body-font">
-        <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-          <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700 flex flex-wrap items-center text-base justify-center">
-            <Link href="/" legacyBehavior>
-              <a className="mr-5 hover:text-gray-900">Home</a>
-            </Link>
-            <Link href="/dhill" legacyBehavior>
-              <a className="mr-5 hover:text-gray-900">Downhill Skate</a>
-            </Link>
-            <Link href="/bookingForm" legacyBehavior>
-              <a className="hover:text-gray-900">Surf</a>
-            </Link>
-          </nav>
-        </div>
-        
-      </header>
+    
     
     <div className="container mx-auto p-4">
     <h2 className="text-lg font-semibold mb-4 text-center">Booking Form</h2>
@@ -88,7 +85,7 @@ const Database = () => {
 
         <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-bold text-gray-700">Name</label>
+          <label htmlFor="name" className="block text-sm font-bold text-gray-700">Attendee Name</label>
           <input
             type="text"
             id="name"
@@ -170,11 +167,6 @@ const Database = () => {
 
  </div>
 
-       <footer className="bg-gray-800 text-white mt-4 text-center py-4">
-      <p>&copy; {new Date().getFullYear()} SDRI</p>
-      <p>
-      <Link href="/privacypolicy/">Privacy Policy</Link>  </p>
-    </footer>
     </div>
     </div>
   );

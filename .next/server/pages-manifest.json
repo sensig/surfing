@@ -2,9 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/bookingForm": "pages/bookingForm.js",
-  "/schedule": "pages/schedule.js",
-  "/waiver": "pages/waiver.js",
-  "/database": "pages/database.js",
-  "/waiverminor": "pages/waiverminor.js"
+  "/": "pages/index.js"
 }

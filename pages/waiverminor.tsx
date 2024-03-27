@@ -11,14 +11,17 @@ const WaiverMinor = () => {
   const [parentName, setParentName] = useState('');
   const [parentEmail, setParentEmail] = useState('');
   const router = useRouter();
-  const { email } = router.query; // Assuming you're passing the participant's email as a way to identify the booking.
+  const email = router.query.email as string;
+  const name = router.query.name as string;
+  const date = router.query.date as string;
+  const time = router.query.time as string; 
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
   };
 
   const handleBack = () => {
-    router.push('/database');
+    router.push('/form');
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -38,7 +41,7 @@ const WaiverMinor = () => {
           pname: parentName,
           pemail: parentEmail
         })
-        .match({ email: email as string }); // Ensure `email` is correctly cast or checked to be a string.
+         .match({ email: email, name: name});
 
       if (error) {
         console.error('Supabase error:', error.message);
@@ -47,13 +50,20 @@ const WaiverMinor = () => {
       }
 
       // Sending the confirmation email using EmailJS
-      const templateParams = {
-        to_name: parentName,
-        to_email: parentEmail,
-        subject: "Minor's Surfing Lesson Waiver Agreement Confirmation",
-        message: `You have agreed to the waiver terms on behalf of your child. This email confirms that ${parentName} has given permission for their child to participate in surfing lessons.`,
+     const templateParams = {
+        to_name: name,
+        send_to: email, // Use the email from the query
+        reply_to: "obsurfexperience@gmail.com",
+        subject: 'Surf Lesson Booked',
+        // Include additional fields for date and time
+        booking_date: date,
+        booking_time: time,
+        pname: parentName,
+        message: `Thank you ${parentName} for agreeing to the parental consent and waiver terms for ${name}. 
+        Your booking for ${date} at ${time} is confirmed. If you have
+         any questions/concerns or need to reschedule/cancel please reply 
+         to this email or give us a call at 619-552-3043.`,
       };
-
       emailjs.send('service_arlnk8o', 'template_9lbxd5i', templateParams, 'tnYjhNlQa8ObtYMid'
       )
         .then((response) => {
@@ -153,11 +163,7 @@ const WaiverMinor = () => {
           </button>
         </div>
       </form>
-      <footer className="bg-gray-800 text-white text-center py-4">
-      <p>&copy; {new Date().getFullYear()} SDRI</p>
-      <p>
-      <Link href="/privacypolicy/">Privacy Policy</Link> </p>
-    </footer>
+    
     </div>
   );
 };

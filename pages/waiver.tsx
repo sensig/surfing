@@ -10,6 +10,10 @@ const Waiver = () => {
   const router = useRouter();
   // Extract the email directly from the router query
   const email = router.query.email as string;
+  const name = router.query.name as string;
+  const date = router.query.date as string;
+  const time = router.query.time as string;
+
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
@@ -32,7 +36,7 @@ const Waiver = () => {
       const { error } = await supabase
         .from('bookings')
         .update({ waiverAgreed: true })
-        .match({ email: email }); // Use the email to match the booking record
+        .match({ email: email, name: name}); // Use the email to match the booking record
   
       if (error) {
         console.error('Supabase error:', error.message);
@@ -43,12 +47,20 @@ const Waiver = () => {
       console.log('Agreement recorded.');
 
       const templateParams = {
-        to_name: 'User', // Ideally, you would use the user's actual name here
-        to_email: email, // Use the email from the query
-        subject: 'Waiver Agreement Confirmation',
-        message: 'Thank you for agreeing to the waiver terms. Your booking is confirmed.',
+        to_name: name,
+        send_to: email, // Use the email from the query
+        reply_to: "obsurfexperience@gmail.com",
+        subject: 'Surf Lesson Booked',
+        // Include additional fields for date and time
+        booking_date: date,
+        booking_time: time,
+        message: `Thank you ${name} for agreeing to the waiver terms. 
+        Your booking for ${date} at ${time} is confirmed. If you have
+         any questions/concerns or need to reschedule/cancel please reply 
+         to this email or give us a call at 619-552-3043.`,
       };
-  
+      console.log('Sending email to:', email);
+
       emailjs.send('service_arlnk8o', 'template_9lbxd5i', templateParams, 'tnYjhNlQa8ObtYMid')
         .then((emailResponse) => {
           console.log('Email sent:', emailResponse.text);
@@ -65,7 +77,7 @@ const Waiver = () => {
   };
 
   const handleBack = () => {
-    router.push('/database');
+    router.push('/form');
   };
   
   return (
@@ -133,11 +145,7 @@ const Waiver = () => {
           </button>
         </div>
       </form>
-      <footer className="bg-gray-800 text-white text-center py-4">
-      <p>&copy; {new Date().getFullYear()} SDRI</p>
-      
-      <Link href="/privacypolicy/">Privacy Policy</Link> 
-    </footer>
+     
     </div>
     
   );
